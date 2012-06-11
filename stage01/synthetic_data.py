@@ -340,7 +340,7 @@ class Populater(object):
             else:
                 # Using access_key as the second required parameter here is nonsense; we probably should just pass zero
                 b.add_user_grant(thisgrant, userlist[grantuser].access_key, display_name=userlist[grantuser].username)
-            log.info('\t'.join([self.username, 'BUCKET', bucket, thisgrant, grantuser]))
+            log.info('\t'.join([self.username, 'BUCKET', bucket, thisgrant, grantuser.lower()]))
         return bucketList
 
     def add_objects(self, bucket, count, srcDir='/usr/bin'):
@@ -365,7 +365,7 @@ class Populater(object):
                 # Using access_key as the second required parameter here is nonsense; we probably should just pass zero
                 obj.add_user_grant(thisgrant, userlist[grantuser].access_key, display_name=userlist[grantuser].username)
             log.info('\t'.join([self.username, 'OBJECT', bucket, 
-                                objectpath, thisgrant, grantuser]))
+                                objectpath, thisgrant, grantuser.lower()]))
 
     def upload_object(self, bucket, object_filename, acl):
         k = Key(bucket)
@@ -409,8 +409,6 @@ class Populater(object):
                                                 snap.volume_id]))
 
     def add_data(self, objType, data):
-        if objType == 'KEYPAIR' and euca_version.startswith('3.') and activity_log_version.startswith('2.'):
-            data[0] = ''.join([self.username, data[0]])
         if objType == 'VOLUME' and euca_version.startswith('3.'):
             if data[2] == 'default':
                 data[2] = DEFAULT_SC

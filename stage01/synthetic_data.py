@@ -340,7 +340,7 @@ class Populater(object):
             else:
                 # Using access_key as the second required parameter here is nonsense; we probably should just pass zero
                 b.add_user_grant(thisgrant, userlist[grantuser].access_key, display_name=userlist[grantuser].username)
-            log.info('\t'.join([self.username, 'BUCKET', bucket, thisgrant, grantuser.lower()]))
+            log.info('\t'.join([self.username, 'BUCKET', bucket, thisgrant, grantuser]))
         return bucketList
 
     def add_objects(self, bucket, count, srcDir='/usr/bin'):
@@ -365,7 +365,7 @@ class Populater(object):
                 # Using access_key as the second required parameter here is nonsense; we probably should just pass zero
                 obj.add_user_grant(thisgrant, userlist[grantuser].access_key, display_name=userlist[grantuser].username)
             log.info('\t'.join([self.username, 'OBJECT', bucket, 
-                                objectpath, thisgrant, grantuser.lower()]))
+                                objectpath, thisgrant, grantuser]))
 
     def upload_object(self, bucket, object_filename, acl):
         k = Key(bucket)
@@ -412,6 +412,10 @@ class Populater(object):
         if objType == 'VOLUME' and euca_version.startswith('3.'):
             if data[2] == 'default':
                 data[2] = DEFAULT_SC
+        elif objType == 'OBJECT' and euca_version.startswith('3.'):
+            data[3] = data[3].lower()
+        elif objType == 'BUCKET' and euca_version.startswith('3.'):
+            data[2] = data[2].lower()
         getattr(self, objType.lower()).add(tuple(data))
 
     def check_data(self, clean=False):
@@ -695,7 +699,7 @@ def check(clean=False):
             if euca_version.startswith('3'):
                 userlist[userfield].setId(accounts[userfield])
             continue
-        elif userlist.has_key(fields[0]):
+        elif userlist.has_key(fields[0].lower()):
             userlist[fields[0].lower()].add_data(fields[1], fields[2:])
     for user in userlist.keys():
         userlist[user].add_data('GROUP', ['default', 'default group'])

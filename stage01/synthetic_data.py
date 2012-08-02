@@ -246,7 +246,8 @@ class Populater(object):
                                         is_secure=is_secure,
                                         region=RegionInfo(None, "eucalyptus", host),
                                         port=int(port),
-                                        path=urlparts[2])
+                                        path=urlparts[2],
+                                        api_version="2010-08-31")
         return self._ec2conn
 
     def add_ssh_keys(self, count):

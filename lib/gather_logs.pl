@@ -189,6 +189,8 @@ sub get_clc_log{
 
 	get_hprof_file($this_ip, $log_dir . $this_ip . "_CLC/");
 
+	get_sys_log_files($this_ip, $log_dir . $this_ip . "_CLC/");
+
 	return 0;
 };
 
@@ -224,6 +226,7 @@ sub get_cc_log{
 	timed_run("scp -o StrictHostKeyChecking=no root\@$my_cc_ip:$ENV{'EUCALYPTUS'}/var/log/eucalyptus/axis2c.log " . $log_dir . $my_cc_ip . "_CC" . $group . "/", 60);
 	check_timed_run("axis2c.log from $cc_ip");
 
+	get_sys_log_files($this_ip, $log_dir . $this_ip . "_CC" . $group );
 
 	return 0;
 
@@ -309,6 +312,8 @@ sub get_nc_log{
 	timed_run("scp -o StrictHostKeyChecking=no root\@$my_nc_ip:$ENV{'EUCALYPTUS'}/var/log/eucalyptus/axis2c.log " . $log_dir . $my_nc_ip . "_NC" . $group  . "/", 60);
 	check_timed_run("axis2c.log from $my_nc_ip");
 
+	get_sys_log_files($this_ip, $log_dir . $this_ip . "_NC" . $group );
+
 	return 0;
 };
 
@@ -348,7 +353,9 @@ sub get_sc_log{
                 print "\n";
         };
 
-	get_hprof_file($this_ip, $log_dir . $this_ip . "_SC/");
+	get_hprof_file($this_ip, $log_dir . $this_ip . "_SC" . $group );
+
+	get_sys_log_files($this_ip, $log_dir . $this_ip . "_SC" . $group );
 
 	return 0;
 };
@@ -386,6 +393,7 @@ sub get_ws_log{
 
 
 	get_hprof_file($this_ip, $log_dir . $this_ip . "_WS/");
+	get_sys_log_files($this_ip, $log_dir . $this_ip . "_WS/");
 
 	return 0;
 };
@@ -411,6 +419,33 @@ sub get_hprof_file{
 		print "No *.hprof files\n";
 		print "\n";
 	};
+
+	return 0;
+};
+
+
+sub get_sys_log_files{
+	my $this_ip = shift @_;
+	my $location = shift @_;
+
+	print "\n";
+	print "Machine $this_ip\n\n";
+
+	print "Trying to Retrieve Sys Log Files /var/log/messages*\n";
+        timed_run("scp -o StrictHostKeyChecking=no root\@$this_ip:/var/log/messages* $location" , 120);
+	print "\n";
+
+	print "Trying to Retrieve Sys Log Files /var/log/debug*\n";
+        timed_run("scp -o StrictHostKeyChecking=no root\@$this_ip:/var/log/debug* $location" , 120);
+	print "\n";
+
+	print "Trying to Retrieve Sys Log Files /var/log/kern*\n";
+        timed_run("scp -o StrictHostKeyChecking=no root\@$this_ip:/var/log/kern* $location" , 120);
+	print "\n";
+
+	print "Trying to Retrieve Sys Log Files /var/log/daemon*\n";
+	timed_run("scp -o StrictHostKeyChecking=no root\@$this_ip:/var/log/daemon* $location" , 120);
+	print "\n";
 
 	return 0;
 };

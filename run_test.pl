@@ -633,11 +633,11 @@ sub process_output{
 
 		###	ADDED TO KEEP OUTPUT IN ORDER		081512
 		if( $this_cond eq "pre_cond" ){
-			$this_cond = "0-" . $this_cond;
+			$this_cond = "00-" . $this_cond;
 		}elsif( $this_cond eq "post_cond" ){
-			$this_cond = "2-" . $this_cond;
+			$this_cond = "02-" . $this_cond;
 		}elsif( $this_cond eq "run" ){
-			$this_cond = "1-" . $this_cond;
+			$this_cond = "01-" . $this_cond;
 		};
 
 		my $out_filename = "$ENV{'PWD'}/artifacts/trial-" . sprintf("%04d", $this_trial) . 

@@ -244,14 +244,8 @@ my $included_env = "source $ENV{'PWD'}/etc/default.env; ";
 
 # get the credentials for the testee system   ... prob... not bash
 if( $cred_included eq "YES" ){
-	###	ADDED 010312	TAKEN OUT... CANNOT SOURCE EUCARC
-#	if( -e "$ENV{'PWD'}/credentials/eucarc" ){
-		$included_env .= "source $ENV{'PWD'}/credentials/eucarc; ";
-#	}else{
-#		print "\nWARNING: CANNOT LOCATE $ENV{'PWD'}/credentials/eucarc\n\n";
-#	};
-}else{
-	# not sure ....dynamically load it ??
+#	$included_env .= "source $ENV{'PWD'}/credentials/eucarc; ";
+	$included_env .= "if [ -f $ENV{'PWD'}/credentials/eucarc ]; then source ../credentials/eucarc; fi; ";
 };
 
 # process ENV file
@@ -620,9 +614,9 @@ sub process_output{
 
 	if( $this_option == 2 || $this_option == 3 ){
 
-		if( length( $script ) > 200 ){
-			$script = substr($script, 0, 199);
-		};
+	#	if( length( $script ) > 200 ){
+	#		$script = substr($script, 0, 199);
+	#	};
 
 		if( $script =~ /^\.\// ){
 			$script =~ s/\.\///;
@@ -631,6 +625,20 @@ sub process_output{
 		$script =~ s/\//_slash_/g;
 		$script =~ s/\s+/_/g;
 		$script =~ s/\./_dot_/g;
+
+		###	ADDED TO CHOP OFF LONG SCRIPT NAME	081512
+		if( length($script) > 200 ){
+			$script = substr($script, 0, 200);
+		};
+
+		###	ADDED TO KEEP OUTPUT IN ORDER		081512
+		if( $this_cond eq "pre_cond" ){
+			$this_cond = "0-" . $this_cond;
+		}elsif( $this_cond eq "post_cond" ){
+			$this_cond = "2-" . $this_cond;
+		}elsif( $this_cond eq "run" ){
+			$this_cond = "1-" . $this_cond;
+		};
 
 		my $out_filename = "$ENV{'PWD'}/artifacts/trial-" . sprintf("%04d", $this_trial) . 
 				"-stage-" . sprintf("%03d", $this_stage) .

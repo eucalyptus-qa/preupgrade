@@ -78,6 +78,20 @@ vim ./input/2b_tested.lst
 192.168.51.86	CENTOS	6.3	64	REPO	[NC00]
 </sample>
 
+### 7.2. BE SURE THAT YOUR MACHINE's id_rsa.pub KEY IS INCLUDED THE CLC's authorized_keys LIST
+
+ON **YOUR TEST MACHINE**:
+
+<code>
+cat ~/.ssh/id_rsa.pub
+</code>
+
+ON **CLC MACHINE**:
+
+<code>
+vim ~/.ssh/authorized_keys
+</code>
+
 ### 8. RUN THE TEST
 
 <code>
